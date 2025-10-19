@@ -1,27 +1,21 @@
 class Solution {
-    ListNode ans = new ListNode(0); // dummy node
-    ListNode sol = ans; // pointer to build the merged list
-
     public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
-        if (list1 == null && list2 == null) {
-            return ans.next;
+        ListNode ans = new ListNode(0); // Dummy node
+        ListNode temp = ans;
+
+        while (list1 != null && list2 != null) {
+            if (list1.val > list2.val) {
+                temp.next = new ListNode(list2.val);
+                list2 = list2.next;
+            } else {
+                temp.next = new ListNode(list1.val);
+                list1 = list1.next;
+            }
+            temp = temp.next;
         }
 
-        if (list1 == null || list2 == null) {
-            sol.next = (list1 == null) ? list2 : list1;
-            return ans.next;
-        }
+        temp.next = (list1 == null) ? list2 : list1;
 
-        if (list1.val > list2.val) {
-            sol.next = new ListNode(list2.val);
-            sol = sol.next;
-            mergeTwoLists(list1, list2.next);
-        } else {
-            sol.next = new ListNode(list1.val);
-            sol = sol.next;
-            mergeTwoLists(list1.next, list2);
-        }
-
-        return ans.next;
+        return ans.next; // Skip dummy node
     }
 }
