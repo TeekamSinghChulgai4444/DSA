@@ -2,36 +2,28 @@ import java.util.Arrays;
 
 class Solution {
 
-    public int findTargetSumWays(int[] nums, int target) {
-        int sum = 0;
-        for (int x : nums) sum += x;
-
-        if (Math.abs(target) > sum) return 0;
-
-        int[][] dp = new int[nums.length][2 * sum + 1];
-        for (int i = 0; i < nums.length; i++) {
-            Arrays.fill(dp[i], -1);
+    public int helper(int[] nums, int i, int sum, int target, int[][] dp, int offset) {
+        if (i == nums.length) {
+            return sum == target ? 1 : 0;
         }
 
-        return dfs(nums, 0, target, sum, dp);
+        if (dp[i][sum + offset] != -1) {
+            return dp[i][sum + offset];
+        }
+
+        int add = helper(nums, i + 1, sum + nums[i], target, dp, offset);
+        int subtract = helper(nums, i + 1, sum - nums[i], target, dp, offset);
+
+        return dp[i][sum + offset] = add + subtract;
     }
 
-    private int dfs(int[] nums, int idx, int target, int sum, int[][] dp) {
+    public int findTargetSumWays(int[] nums, int target) {
+        int sum = 0;
+        for (int num : nums) sum += num;
 
-        // ✅ CRITICAL BOUNDS CHECK (FIX)
-        if (target > sum || target < -sum) return 0;
+        int[][] dp = new int[nums.length][2 * sum + 1];
+        for (int[] row : dp) Arrays.fill(row, -1);
 
-        if (idx == nums.length) {
-            return target == 0 ? 1 : 0;
-        }
-
-        if (dp[idx][target + sum] != -1) {
-            return dp[idx][target + sum];
-        }
-
-        int add = dfs(nums, idx + 1, target - nums[idx], sum, dp);
-        int sub = dfs(nums, idx + 1, target + nums[idx], sum, dp);
-
-        return dp[idx][target + sum] = add + sub;
+        return helper(nums, 0, 0, target, dp, sum);
     }
 }
