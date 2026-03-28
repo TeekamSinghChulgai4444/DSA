@@ -31,15 +31,7 @@ public:
 
         int size=merge.size();
 
-        cout<<"size of merge : : "<<merge.size()<<endl;
-        cout<<"merge vector  : : ";
-
-
-        for(int i:merge){
-            cout<<i<<" ";
-        }
-
-        cout<<endl;
+        
 
         if(size %2==0){
             double median=(merge[size/2]+merge[size/2-1])/2.0;
