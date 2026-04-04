@@ -1,21 +1,19 @@
 class Solution {
-  public class Triplet implements Comparable<Triplet> {
+
+    class Triplate implements Comparable<Triplate> {
         int row;
         int col;
         int effort;
 
-        public Triplet(int r, int c, int d) {
-            row = r;
-            col = c;
-            effort = d;
+        public Triplate(int row, int col, int effort) {
+            this.row = row;
+            this.col = col;
+            this.effort = effort;
         }
 
-        @Override
-        public int compareTo(Triplet t) {
-            if (this.effort == t.effort) {
-                return this.row - t.row;
-            }
-            return this.effort - t.effort;
+        public int compareTo(Triplate p) {
+            if (this.effort == p.effort) return this.row - p.row;
+            return this.effort - p.effort;
         }
     }
 
@@ -24,67 +22,68 @@ class Solution {
         int n = h.length;
         int m = h[0].length;
 
-        int[][] effort = new int[n][m];
+        int[][] dp = new int[n][m];
 
         for (int i = 0; i < n; i++) {
-            Arrays.fill(effort[i], Integer.MAX_VALUE);
+            Arrays.fill(dp[i], Integer.MAX_VALUE);
         }
 
-        PriorityQueue<Triplet> pq = new PriorityQueue<>();
+        dp[0][0] = 0;
 
-        pq.add(new Triplet(0, 0, 0));
-        effort[0][0] = 0;
+        PriorityQueue<Triplate> pq = new PriorityQueue<>();
+        pq.add(new Triplate(0, 0, 0));
 
         while (pq.size() > 0) {
 
-            Triplet top = pq.remove();
-            int r = top.row, c = top.col, ef = top.effort;
+            Triplate top = pq.remove();
 
-            // up
-            if (r >= 1) {
-                int temp = Math.abs(h[r][c] - h[r - 1][c]); // FIX
-                int newEffort = Math.max(ef, temp); // FIX
+            int row = top.row;
+            int col = top.col;
+            int effort = top.effort;
 
-                if (newEffort < effort[r - 1][c]) { // FIX
-                    effort[r - 1][c] = newEffort; // FIX
-                    pq.add(new Triplet(r - 1, c, newEffort));
-                }
+            if (row == n - 1 && col == m - 1) {
+                return effort;
             }
+
+            int ans;
 
             // down
-            if (r < n - 1) {
-                int temp = Math.abs(h[r + 1][c] - h[r][c]); 
-                int newEffort = Math.max(ef, temp); 
-
-                if (newEffort < effort[r + 1][c]) {
-                    effort[r + 1][c] = newEffort;
-                    pq.add(new Triplet(r + 1, c, newEffort));
-                }
-            }
-
-            // left
-            if (c >= 1) {
-                int temp = Math.abs(h[r][c] - h[r][c - 1]); 
-                int newEffort = Math.max(ef, temp); 
-
-                if (newEffort < effort[r][c - 1]) {
-                    effort[r][c - 1] = newEffort;
-                    pq.add(new Triplet(r, c - 1, newEffort));
+            if (row + 1 < n) {
+                ans = Math.max(effort, Math.abs(h[row + 1][col] - h[row][col]));
+                if (ans < dp[row + 1][col]) {
+                    dp[row + 1][col] = ans;
+                    pq.add(new Triplate(row + 1, col, ans));
                 }
             }
 
             // right
-            if (c < m - 1) { 
-                int temp = Math.abs(h[r][c + 1] - h[r][c]);
-                int newEffort = Math.max(ef, temp); 
+            if (col + 1 < m) {
+                ans = Math.max(effort, Math.abs(h[row][col + 1] - h[row][col]));
+                if (ans < dp[row][col + 1]) {
+                    dp[row][col + 1] = ans;
+                    pq.add(new Triplate(row, col + 1, ans));
+                }
+            }
 
-                if (newEffort < effort[r][c + 1]) {
-                    effort[r][c + 1] = newEffort;
-                    pq.add(new Triplet(r, c + 1, newEffort));
+            // up
+            if (row - 1 >= 0) {
+                ans = Math.max(effort, Math.abs(h[row - 1][col] - h[row][col]));
+                if (ans < dp[row - 1][col]) {
+                    dp[row - 1][col] = ans;
+                    pq.add(new Triplate(row - 1, col, ans));
+                }
+            }
+
+            // left
+            if (col - 1 >= 0) {
+                ans = Math.max(effort, Math.abs(h[row][col - 1] - h[row][col]));
+                if (ans < dp[row][col - 1]) {
+                    dp[row][col - 1] = ans;
+                    pq.add(new Triplate(row, col - 1, ans));
                 }
             }
         }
 
-        return effort[n - 1][m - 1];
+        return 0;
     }
 }
