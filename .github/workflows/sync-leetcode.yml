@@ -1,0 +1,19 @@
+name: Sync LeetCode submissions
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sync LeetCode submissions to repo
+        uses: joshcai/leetcode-sync@v1.4
+        with:
+          github-token: ${{ secrets.GH_TOKEN }}
+          leetcode-csrf-token: ${{ secrets.LEETCODE_CSRF_TOKEN }}
+          leetcode-session: ${{ secrets.LEETCODE_SESSION }}
+          destination-folder: leetcode
+          verbose: true
