@@ -1,0 +1,83 @@
+name: Sync Codeforces submissions
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Fetch and commit Codeforces solutions
+        env:
+          CF_HANDLE: ${{ secrets.CF_HANDLE }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          python - <<'EOF'
+          import requests, os, base64, json, time
+          handle  = os.environ["CF_HANDLE"]
+          token   = os.environ["GH_TOKEN"]
+          repo    = os.environ["REPO"]
+          headers = {"Authorization": f"token {token}", "Accept": "application/vnd.github.v3+json"}
+          history_path = "codeforces/submission_history.json"
+          r = requests.get(f"https://api.github.com/repos/{repo}/contents/{history_path}", headers=headers)
+          if r.status_code == 200:
+              data     = r.json()
+              history  = json.loads(base64.b64decode(data["content"]).decode())
+              file_sha = data["sha"]
+          else:
+              history  = []
+              file_sha = None
+          ext_map = {
+              "GNU C++17": "cpp", "GNU C++14": "cpp", "GNU C++20 (64)": "cpp",
+              "PyPy 3": "py", "Python 3": "py",
+              "Java 8": "java", "Java 11": "java",
+              "C": "c", "JavaScript": "js", "Kotlin": "kt"
+          }
+          url  = f"https://codeforces.com/api/user.status?handle={handle}&from=1&count=50"
+          subs = requests.get(url).json().get("result", [])
+          new_history = list(history)
+          for s in subs:
+              if s.get("verdict") != "OK":
+                  continue
+              sid = str(s["id"])
+              if sid in history:
+                  continue
+              lang    = s.get("programmingLanguage", "")
+              ext     = ext_map.get(lang, "txt")
+              cid     = s["contestId"]
+              idx     = s["problem"]["index"]
+              name    = s["problem"]["name"].replace(" ", "_").replace("/", "-")
+              code    = s.get("source", "")
+              if not code:
+                  continue
+              path    = f"codeforces/{cid}/{idx}_{name}.{ext}"
+              encoded = base64.b64encode(code.encode()).decode()
+              msg     = f"Add CF solution: {cid}{idx} - {s['problem']['name']}"
+              check   = requests.get(f"https://api.github.com/repos/{repo}/contents/{path}", headers=headers)
+              payload = {"message": msg, "content": encoded}
+              if check.status_code == 200:
+                  payload["sha"] = check.json()["sha"]
+              requests.put(f"https://api.github.com/repos/{repo}/contents/{path}", headers=headers, json=payload)
+              new_history.append(sid)
+              time.sleep(0.5)
+          encoded_h = base64.b64encode(json.dumps(new_history, indent=2).encode()).decode()
+          payload_h = {"message": "Update CF submission history", "content": encoded_h}
+          if file_sha:
+              payload_h["sha"] = file_sha
+          requests.put(f"https://api.github.com/repos/{repo}/contents/{history_path}", headers=headers, json=payload_h)
+          print(f"Done. {len(new_history) - len(history)} new solutions synced.")
+          EOF
