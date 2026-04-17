@@ -1,15 +1,18 @@
 class Solution {
     public int[] sortArray(int[] nums) {
-        PriorityQueue<Integer> pq = new PriorityQueue<>();  
 
-        for (int i : nums) {
-            pq.offer(i);
+      PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+
+        for (int num : nums) {
+            minHeap.add(num);
         }
 
-        for (int i = 0; i < nums.length; i++) { 
-            nums[i] = pq.poll();                 
+        int i = 0;
+        while (!minHeap.isEmpty()) {
+            nums[i++] = minHeap.poll();
         }
 
         return nums;
+        
     }
 }
