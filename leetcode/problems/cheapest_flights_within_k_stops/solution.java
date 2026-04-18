@@ -1,47 +1,53 @@
 import java.util.*;
 
-public class Solution {
+class Solution {
 
-    public class pair {
-        int to, cost;
+    class Pair {
+        int des;
+        int weight;
 
-        public pair(int to, int cost) {
-            this.to = to;
-            this.cost = cost;
+        Pair(int d, int w) {
+            des = d;
+            weight = w;
         }
     }
 
-    public class tuple implements Comparable<tuple> {
-        int node, cost, stops;
+    class Triplate implements Comparable<Triplate> {
+        int node;
+        int cost;
+        int stops;
 
-        public tuple(int node, int cost, int stops) {
+        Triplate(int node, int cost, int stops) {
             this.node = node;
             this.cost = cost;
             this.stops = stops;
         }
 
-        public int compareTo(tuple t) {
+        public int compareTo(Triplate t) {
             return this.cost - t.cost;
         }
     }
 
     public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
 
-        List<List<pair>> graph = new ArrayList<>();
-        for (int i = 0; i < n; i++) graph.add(new ArrayList<>());
+        List<List<Pair>> adj = new ArrayList<>();
 
-        for (int[] f : flights) {
-            graph.get(f[0]).add(new pair(f[1], f[2]));
+        for (int i = 0; i < n; i++) {
+            adj.add(new ArrayList<>());
         }
 
-        PriorityQueue<tuple> pq = new PriorityQueue<>();
-        pq.offer(new tuple(src, 0, 0));
+        for (int[] arr : flights) {
+            adj.get(arr[0]).add(new Pair(arr[1], arr[2]));
+        }
+
+        PriorityQueue<Triplate> pq = new PriorityQueue<>();
+        pq.offer(new Triplate(src, 0, 0));
 
         int[] stopsArr = new int[n];
         Arrays.fill(stopsArr, Integer.MAX_VALUE);
 
         while (!pq.isEmpty()) {
-            tuple cur = pq.poll();
+            Triplate cur = pq.poll();
 
             int node = cur.node;
             int cost = cur.cost;
@@ -55,8 +61,8 @@ public class Solution {
 
             stopsArr[node] = stops;
 
-            for (pair p : graph.get(node)) {
-                pq.add(new tuple(p.to, cost + p.cost, stops + 1));
+            for (Pair p : adj.get(node)) {
+                pq.offer(new Triplate(p.des, cost + p.weight, stops + 1));
             }
         }
 
