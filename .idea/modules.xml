@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/BIT_MANIPULATION/BIT_MANIPULATION.iml" filepath="$PROJECT_DIR$/BIT_MANIPULATION/BIT_MANIPULATION.iml" />
+      <module fileurl="file://$PROJECT_DIR$/DP1/DP1.iml" filepath="$PROJECT_DIR$/DP1/DP1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/DSA.iml" filepath="$PROJECT_DIR$/.idea/DSA.iml" />
+      <module fileurl="file://$PROJECT_DIR$/GRAPH1/GRAPH1.iml" filepath="$PROJECT_DIR$/GRAPH1/GRAPH1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/HEAP/HEAP.iml" filepath="$PROJECT_DIR$/HEAP/HEAP.iml" />
+      <module fileurl="file://$PROJECT_DIR$/LEETCODE/LEETCODE.iml" filepath="$PROJECT_DIR$/LEETCODE/LEETCODE.iml" />
+      <module fileurl="file://$PROJECT_DIR$/LINKEDLIST/ALL/LINKEDLIST.iml" filepath="$PROJECT_DIR$/LINKEDLIST/ALL/LINKEDLIST.iml" />
+      <module fileurl="file://$PROJECT_DIR$/QUEUE/QUEUE.iml" filepath="$PROJECT_DIR$/QUEUE/QUEUE.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Recursion/Recursion.iml" filepath="$PROJECT_DIR$/Recursion/Recursion.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SEGMENT_TREE/SEGMENT_TREE.iml" filepath="$PROJECT_DIR$/SEGMENT_TREE/SEGMENT_TREE.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Stack/Stack.iml" filepath="$PROJECT_DIR$/Stack/Stack.iml" />
+      <module fileurl="file://$PROJECT_DIR$/QUEUES/untitled/untitled.iml" filepath="$PROJECT_DIR$/QUEUES/untitled/untitled.iml" />
+    </modules>
+  </component>
+</project>
